@@ -1,6 +1,3 @@
-import asyncio
-import logging
-
 from aiogram import Bot, Dispatcher
 from aiogram.enums.parse_mode import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
@@ -35,23 +32,31 @@ async def main():
     
 
 
-async def send_message(): # тут ошибка ----------------------------------------------------
-    # for chat_id in db.chat_id():
-    #     try:
-            bot.send_message(chat_id = 1260741089, text=text.choice , reply_markup=kb.dishes_keyboard)
-            DayOfTheWeek_id = day.get_DayOfTheWeekId()
-            print(DayOfTheWeek_id)
-            return DayOfTheWeek_id
+tasks = {}
 
-        # except Exception as e:
-        #     print(e)
-        
-    
+async def delete_message_after_12_hours(msg):
+    await asyncio.sleep(50)  # 12 часов в секундах
+    try:
+        await bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
+    except Exception as e:
+        print(e)
+
+async def send_message():
+    for chat_id in db.chat_id():
+        try:
+            print(chat_id)
+            msg = await bot.send_message(chat_id=chat_id, text=text.choice, reply_markup=kb.dishes_keyboard)
+            task = asyncio.create_task(delete_message_after_12_hours(msg))
+            tasks[msg.message_id] = task
+        except Exception as e:
+            print(e)
+
+
 
 async def scheduler():
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(send_message, 'cron', day_of_week='0-4', hour=11, minute='3', end_date='2024-12-27',)
-    #scheduler.add_job(delite_selection, 'cron', day_of_week='0-4', hour=23, minute='5', end_date='2024-12-27',)
+    scheduler.add_job(send_message, 'cron', day_of_week='0-4', hour=13, minute='9', end_date='2024-12-27',)
+    scheduler.add_job(delite_selection, day='*/10', hour='0', minute='0', end_date='2024-12-27',)
     scheduler.start()
 
 
