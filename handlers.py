@@ -50,11 +50,11 @@ async def remember_student(call: types.CallbackQuery):
 
 # Обработчик выбора блюда
 @router.callback_query(lambda call: call.data.startswith("dishes_"))
-async def remember_delishe(call: types.CallbackQuery):
+async def remember_delishe(call: types.CallbackQuery):    
     student_id = db.chat_student_id(call.from_user.id)
     dishes_id = call.data.split("_")[1]
-    DayOfTheWeek_id = await main.send_message()# тут ошибка -----------------------------------------------
-    print(DayOfTheWeek_id)
+    DayOfTheWeek_id = day.get_DayOfTheWeekId()
+    print(student_id, dishes_id, DayOfTheWeek_id)
     db.get_selection(student_id, dishes_id, DayOfTheWeek_id)
     await call.message.answer(text.thanks.format(name=call.from_user.full_name))
     await main.delite(call.from_user.id, call.message.message_id)
