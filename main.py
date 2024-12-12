@@ -19,7 +19,7 @@ router = Router()
 if sys.platform == 'win32':
 	asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
     
-bot = Bot(token='7972577832:AAGhaJYn5eIw8gDZ2Q6YZS90mW81p12Uq-E', default=DefaultBotProperties(parse_mode=ParseMode.HTML))
+bot = Bot(token='TOKEN', default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher(storage=MemoryStorage())
 
 
@@ -35,7 +35,7 @@ async def main():
 tasks = {}
 
 async def delete_message_after_12_hours(msg):
-    await asyncio.sleep(50)  # 12 часов в секундах
+    await asyncio.sleep(43200)  # 12 часов в секундах
     try:
         await bot.delete_message(chat_id=msg.chat.id, message_id=msg.message_id)
     except Exception as e:
