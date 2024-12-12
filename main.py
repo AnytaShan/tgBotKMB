@@ -56,7 +56,7 @@ async def send_message():
 async def scheduler():
     scheduler = AsyncIOScheduler()
     scheduler.add_job(send_message, 'cron', day_of_week='0-4', hour=13, minute='9', end_date='2024-12-27',)
-    scheduler.add_job(delite_selection, day='*/10', hour='0', minute='0', end_date='2024-12-27',)
+    scheduler.add_job(delite_selection, day_of_week='0', hour='0', minute='0', end_date='2024-12-27',)
     scheduler.start()
 
 
