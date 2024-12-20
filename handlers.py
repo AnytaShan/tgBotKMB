@@ -39,14 +39,30 @@ async def show_students(call: types.CallbackQuery):
 # Обработчик выбора студента
 @router.callback_query(lambda call: call.data.startswith("student_"))
 async def remember_student(call: types.CallbackQuery):
-    student_name = call.data.split("_")[1]
-    telegram_id = call.from_user.id
-    if db.examination_student(student_name) == 0:
-        await call.message.answer(f"Я уже знаком с этим студентом и он - не ты. Попробуй снова")
-    else: 
-        db.telegram_id(telegram_id, student_name)
-        await call.message.answer(text.telegram_id.format(name=call.from_user.full_name))
+    if call.data.startswith("student_") == call.data.startswith("student_000"): #выбор кнопки "назад"
         await main.delite(call.from_user.id, call.message.message_id)
+        await call.message.answer(text.back2.format(name=call.from_user.full_name), reply_markup=kb.create_groups_keyboard())
+    else:
+        student_name = call.data.split("_")[1]
+        telegram_id = call.from_user.id
+        if db.examination_student(student_name) == 0:   #студент уже записан в бд под другим id
+            await call.message.answer(f"Я уже знаком с этим студентом и он - не ты. Попробуй снова")
+        else: 
+            await call.message.answer(f"Ты {student_name}, правильно?", reply_markup=kb.confirmation_kb)
+            await call.message.answer(text.student2.format(name=call.from_user.full_name))
+            await main.delite(call.from_user.id, call.message.message_id)
+            @router.callback_query(lambda call: call.data.startswith("Yes"))  #подтверждение выбора студента
+            async def confirmation_student(call: types.CallbackQuery): 
+                db.telegram_id(telegram_id, student_name)
+                await call.message.answer(text.telegram_id.format(name=call.from_user.full_name))
+                await main.delite(call.from_user.id, call.message.message_id)
+            @router.callback_query(lambda call: call.data.startswith("No"))  #подтверждение выбора студента
+            async def confirmation_no_student(call: types.CallbackQuery):
+                await call.message.answer("Попробуй снова")
+                await main.delite(call.from_user.id, call.message.message_id)
+                group_id = db.group_id(student_name)
+                await call.message.answer(text.acquaintance_student2.format(name=call.from_user.full_name), reply_markup=kb.create_students_keyboard(group_id))
+
 
 # Обработчик выбора блюда
 @router.callback_query(lambda call: call.data.startswith("dishes_"))
