@@ -60,8 +60,7 @@ def get_menu(DayOfTheWeekId):
 def chat_id():
       # Достаём список зарегестрированных в базе данных ID для рассылки
       chat_id = []
-      cursor.execute("Select TelegramId From `Students` Where StudentLastName = 'Глебова' or StudentLastName = 'Бондаренко'")
-      # for row in connection.execute("SELECT TelegramId FROM `Students` WHERE TelegramId IS NOT NULL"):
+      cursor.execute("SELECT TelegramId FROM `Students` WHERE TelegramId IS NOT NULL'")
       for row in cursor.fetchall():
             chat_id.append(row[0])
   
