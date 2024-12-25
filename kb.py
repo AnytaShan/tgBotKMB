@@ -49,5 +49,8 @@ def create_menu_keyboard():
     menu_keyboard = InlineKeyboardMarkup(inline_keyboard=menu_keyboard)
     return menu_keyboard
 
-# клавиатура
 
+btn_admin = InlineKeyboardButton(text='Подробнее', callback_data='detailed')
+confirmation_admin = InlineKeyboardMarkup(inline_keyboard=[[btn_admin]])
+
+# клавиатура
